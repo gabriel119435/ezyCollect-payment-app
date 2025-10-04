@@ -2,7 +2,7 @@
 
 ### how it works
 
-the idea is to process payments that will trigger a webhook call with custom payload
+the idea is to process payments that will trigger a webhook call with custom payload. to run simply run at root `docker compose up`
 
 ### tech stack
 
