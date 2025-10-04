@@ -1,0 +1,21 @@
+services:
+  db_container:
+    image: mysql:9
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: db_name
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: "/usr/bin/mysql -h 127.0.0.1 -u root -ppass --execute \"show databases;\""
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app_container:
+    build: .
+    depends_on:
+      db_container:
+        condition: service_healthy
+    ports:
+      - "8080:8080"

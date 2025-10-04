@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: payment processor apis
+  version: 1.0.0
+paths:
+  /users:
+    post:
+      summary: create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_input'
+            example:
+              username: "user2"
+              password: "pass2"
+      responses:
+        '201':
+          description: user created
+        '400':
+          description: client error
+    delete:
+      summary: delete the authenticated user
+      security:
+        - basicAuth: [ ]
+      responses:
+        '200':
+          description: user deleted
+        '401':
+          description: user not authenticated
+  /banking-details:
+    put:
+      summary: save banking details for authenticated user
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/banking_details_input'
+            example:
+              accountNumber: "acc1"
+              routingNumber: "rou2"
+              bankName: "bank3"
+              webhookUrl: "https://webhook.site/0d8a8758-72f3-4d31-9069-c40920d42304"
+              bodyTemplate: "payment at [[banking_details_bank_name]] done with [[payment_value]] at [[payment_status_updated_at]]"
+      responses:
+        '201':
+          description: banking details saved
+        '401':
+          description: user not authenticated
+        '400':
+          description: client error
+  /payments:
+    post:
+      summary: create a payment for authenticated user
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payment_input'
+            example:
+              firstName: "name7"
+              lastName: "name7"
+              zipCode: "123-123"
+              cardInfo: "1234 1234 1234 1234 12/00 123"
+              paymentValue: 7000.0007
+      responses:
+        '201':
+          description: payment created
+        '401':
+          description: user not authenticated
+        '400':
+          description: client error
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    user_input:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        password:
+          type: string
+          maxLength: 50
+      required:
+        - username
+        - password
+    banking_details_input:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          maxLength: 50
+        routingNumber:
+          type: string
+          maxLength: 50
+        bankName:
+          type: string
+          maxLength: 100
+        webhookUrl:
+          type: string
+          maxLength: 200
+        bodyTemplate:
+          type: string
+          maxLength: 500
+      required:
+        - accountNumber
+        - routingNumber
+        - bankName
+        - webhookUrl
+        - bodyTemplate
+    payment_input:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        zipCode:
+          type: string
+          maxLength: 20
+        cardInfo:
+          type: string
+        paymentValue:
+          type: number
+          format: double
+          minimum: 0.01
+      required:
+        - firstName
+        - lastName
+        - zipCode
+        - cardInfo
+        - paymentValue
