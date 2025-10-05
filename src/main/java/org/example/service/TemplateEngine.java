@@ -1,5 +1,6 @@
 package org.example.service;
 
+import lombok.Getter;
 import org.example.dto.exception.ValidationException;
 
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import static org.example.service.TemplateEngine.TemplateKey.BY_KEY;
 
 public class TemplateEngine {
 
+    @Getter
     public enum TemplateKey {
         USERNAME("username"),
         BANK_NAME("banking_details_bank_name"),
@@ -30,10 +32,6 @@ public class TemplateEngine {
 
         TemplateKey(String key) {
             this.key = key;
-        }
-
-        public String getKey() {
-            return key;
         }
 
         static final Map<String, TemplateKey> BY_KEY = Arrays.stream(values())

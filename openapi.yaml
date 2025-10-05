@@ -19,7 +19,7 @@ paths:
         '201':
           description: user created
         '400':
-          description: client error
+          description: bad input
     delete:
       summary: delete the authenticated user
       security:
@@ -52,7 +52,7 @@ paths:
         '401':
           description: user not authenticated
         '400':
-          description: client error
+          description: bad input
   /payments:
     post:
       summary: create a payment for authenticated user
@@ -76,7 +76,7 @@ paths:
         '401':
           description: user not authenticated
         '400':
-          description: client error
+          description: bad input
 components:
   securitySchemes:
     basicAuth:

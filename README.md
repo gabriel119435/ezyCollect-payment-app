@@ -2,7 +2,7 @@
 
 ### how it works
 
-the idea is to process payments that will trigger a webhook call with custom payload. to run simply run at root `docker compose up`
+the idea is to process payments that will trigger a webhook call with custom payload.
 
 ### tech stack
 
@@ -11,6 +11,10 @@ the idea is to process payments that will trigger a webhook call with custom pay
 - mysql 9
 - docker compose
 
+### how to run
+
+`docker compose up`
+
 ### ddl diagram
 
 ![](images/ddl.png)
@@ -18,12 +22,12 @@ the idea is to process payments that will trigger a webhook call with custom pay
 ### apis
 
 - `POST /users` to create a user
-- `DELETE /users` to delete a user and all associated info with it
+- `DELETE /users` to delete a user and all associated information
 - `PUT /banking-details` to save banking details
 - `POST /payments` to create payments
-- there's a `openapi.yaml` at root if needed
+- there's an `openapi.yaml` file at root if needed
 
-in short, payments can only be created for users who have saved banking details
+in short, payments can only be created for users with saved banking details
 
 ### usage examples
 
@@ -47,7 +51,6 @@ curl --request POST \
 curl --request DELETE \
   --url http://localhost:8080/users \
   --header 'Authorization: Basic dXNlcjI6cGFzczI=' \
-  --cookie JSESSIONID=C1B9BD4D7A70BD2AF77F2025EFDA458F
 ```
 
 ![](images/delete_u.png)
@@ -90,7 +93,7 @@ curl --request POST \
 
 ### state diagram
 
-after a payment is created, its status is `CREATED`. it finishes at `ERROR` or `NOTIFIED`
+after a payment is created, its status is `CREATED`. it ends in `ERROR` or `NOTIFIED`
 
 ![](images/state.png)
 
@@ -100,6 +103,10 @@ after a payment is created, its status is `CREATED`. it finishes at `ERROR` or `
 
 ![](images/usage_sql.png)
 
-#### webhook test
+#### logs
+
+![](images/logs.png)
+
+#### webhook result
 
 ![](images/webhook.png)

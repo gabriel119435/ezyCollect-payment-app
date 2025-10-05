@@ -43,18 +43,7 @@ public class WebhookService {
         BankingDetails bankingDetails = bankingDetailsRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("user " + user + " does not have banking details"));
 
-        Map<String, String> values = new HashMap<>();
-        values.put(USERNAME.getKey(), user.getUsername());
-        values.put(BANK_NAME.getKey(), bankingDetails.getBankName());
-        values.put(ROUTING_NUMBER.getKey(), bankingDetails.getRoutingNumber());
-        values.put(ACCOUNT_NUMBER.getKey(), bankingDetails.getAccountNumber());
-        values.put(PAYMENT_FIRST_NAME.getKey(), payment.getFirstName());
-        values.put(PAYMENT_LAST_NAME.getKey(), payment.getLastName());
-        values.put(PAYMENT_VALUE.getKey(), payment.getPaymentValue().toPlainString());
-        values.put(PAYMENT_STATUS_STATUS.getKey(), paymentStatus.getStatus().name());
-        values.put(PAYMENT_STATUS_HISTORY.getKey(), paymentStatus.getHistory());
-        values.put(PAYMENT_STATUS_UPDATED_AT.getKey(), paymentStatus.getUpdatedAt().toString());
-
+        Map<String, String> values = buildMap(paymentStatus, user, bankingDetails, payment);
 
         String url = bankingDetails.getWebhookUrl();
         String body = TemplateEngine.render(bankingDetails.getBodyTemplate(), values);
@@ -72,5 +61,20 @@ public class WebhookService {
         } catch (Exception e) {
             return new ExternalCallResult(false, e.getMessage());
         }
+    }
+
+    private static Map<String, String> buildMap(PaymentStatus paymentStatus, User user, BankingDetails bankingDetails, Payment payment) {
+        Map<String, String> values = new HashMap<>();
+        values.put(USERNAME.getKey(), user.getUsername());
+        values.put(BANK_NAME.getKey(), bankingDetails.getBankName());
+        values.put(ROUTING_NUMBER.getKey(), bankingDetails.getRoutingNumber());
+        values.put(ACCOUNT_NUMBER.getKey(), bankingDetails.getAccountNumber());
+        values.put(PAYMENT_FIRST_NAME.getKey(), payment.getFirstName());
+        values.put(PAYMENT_LAST_NAME.getKey(), payment.getLastName());
+        values.put(PAYMENT_VALUE.getKey(), payment.getPaymentValue().toPlainString());
+        values.put(PAYMENT_STATUS_STATUS.getKey(), paymentStatus.getStatus().name());
+        values.put(PAYMENT_STATUS_HISTORY.getKey(), paymentStatus.getHistory());
+        values.put(PAYMENT_STATUS_UPDATED_AT.getKey(), paymentStatus.getUpdatedAt().toString());
+        return values;
     }
 }
