@@ -1,0 +1,12 @@
+{
+  "validation error": [
+    {
+      "message": "size must be between 10 and 50",
+      "field": "password"
+    },
+    {
+      "message": "size must be between 3 and 50",
+      "field": "username"
+    }
+  ]
+}

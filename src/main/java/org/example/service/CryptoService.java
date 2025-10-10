@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.dto.exception.ValidationException;
+import org.example.dto.internal.exceptions.BadConfigurationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class CryptoService {
     private static final String ALGO = "AES";
 
     public CryptoService(@Value("${crypto.key}") String key) {
-        if (key.length() != 16) throw new ValidationException("crypto.key should have length 16");
+        if (key.length() != 16) throw new BadConfigurationException("crypto.key should have length 16");
         this.key = key;
     }
 

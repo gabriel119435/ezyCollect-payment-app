@@ -7,6 +7,7 @@ import org.example.dto.input.PaymentInput;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -36,5 +37,13 @@ public class Payment {
         this.zipCode = input.zipCode();
         this.cardInfo = input.cardInfo();
         this.paymentValue = input.paymentValue();
+    }
+
+    public boolean isSamePayment(PaymentInput other) {
+        return Objects.equals(this.getFirstName(), other.firstName()) &&
+                Objects.equals(this.getLastName(), other.lastName()) &&
+                Objects.equals(this.getZipCode(), other.zipCode()) &&
+                Objects.equals(this.getCardInfo(), other.cardInfo()) &&
+                this.getPaymentValue().compareTo(other.paymentValue()) == 0;
     }
 }

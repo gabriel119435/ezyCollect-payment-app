@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import org.example.dto.input.BankingDetailsInput;
 import org.example.service.BankingDetailsService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class BankingDetailsController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> createUser(@RequestBody BankingDetailsInput input, Authentication authentication) {
+    public ResponseEntity<Void> createUser(@RequestBody @Valid BankingDetailsInput input, Authentication authentication) {
         bankingDetailsService.saveBankingDetails(input, authentication);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -1,5 +1,7 @@
 package org.example.repository;
 
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseDao {
+    private final DataSource dataSource;
 
-    protected final DataSource dataSource;
-
-    protected BaseDao(DataSource dataSource) {
+    public BaseDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -25,22 +26,20 @@ public class BaseDao {
     }
 
     protected int executeUpdate(String sql, SqlConsumer<PreparedStatement> binder) {
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             binder.accept(stmt);
             return stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
         }
     }
 
     protected <T> List<T> executeQuery(String sql, SqlConsumer<PreparedStatement> binder, SqlFunction<ResultSet, T> mapper) {
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             binder.accept(stmt);
             List<T> result = new ArrayList<>();
             try (ResultSet rs = stmt.executeQuery()) {
@@ -49,6 +48,8 @@ public class BaseDao {
             return result;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
         }
     }
 }

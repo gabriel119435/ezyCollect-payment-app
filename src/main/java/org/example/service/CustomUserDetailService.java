@@ -1,7 +1,6 @@
 package org.example.service;
 
 
-import org.example.dto.exception.ValidationException;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ValidationException("user " + username + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("user " + username + " not found"));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())

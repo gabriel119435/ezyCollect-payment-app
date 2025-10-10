@@ -17,7 +17,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.example.service.TemplateEngine.TemplateKey.*;
+import static org.example.service.TemplateRenderer.TemplateKey.*;
 
 @Service
 public class WebhookService {
@@ -46,7 +46,7 @@ public class WebhookService {
         Map<String, String> values = buildMap(paymentStatus, user, bankingDetails, payment);
 
         String url = bankingDetails.getWebhookUrl();
-        String body = TemplateEngine.render(bankingDetails.getBodyTemplate(), values);
+        String body = TemplateRenderer.render(bankingDetails.getBodyTemplate(), values);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -57,10 +57,17 @@ public class WebhookService {
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             boolean success = response.statusCode() >= 200 && response.statusCode() < 300;
-            return new ExternalCallResult(success, response.statusCode() + " " + response.body());
+            return new ExternalCallResult(success, buildResultResponse(response));
         } catch (Exception e) {
             return new ExternalCallResult(false, e.getMessage());
         }
+    }
+
+    private static String buildResultResponse(HttpResponse<String> response) {
+        String baseMessage = (response.statusCode() + " " + response.body()).replaceAll("\\s+", " ");
+        return baseMessage.length() <= 400
+                ? baseMessage
+                : baseMessage.substring(0, 200) + "..." + baseMessage.substring(baseMessage.length() - 200);
     }
 
     private static Map<String, String> buildMap(PaymentStatus paymentStatus, User user, BankingDetails bankingDetails, Payment payment) {

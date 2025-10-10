@@ -1,6 +1,7 @@
 package org.example.controller;
 
 
+import jakarta.validation.Valid;
 import org.example.dto.input.UserInput;
 import org.example.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody UserInput user) {
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserInput user) {
         userService.createUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

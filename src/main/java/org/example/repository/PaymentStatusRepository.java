@@ -84,20 +84,4 @@ public class PaymentStatusRepository extends BaseDao {
             stmt.setTimestamp(i, Timestamp.from(oldUpdatedAt));
         });
     }
-
-    @Transactional
-    public void deleteAll(long userId) {
-        String sql = """
-            delete ps from payments_status ps
-            join payments p on ps.payment_id = p.id
-            where p.user_id = ?
-            """;
-        executeUpdate(sql, stmt -> stmt.setLong(1, userId));
-
-        sql = "delete from payments where user_id = ?";
-        executeUpdate(sql, stmt -> stmt.setLong(1, userId));
-
-        sql = "delete from banking_details where user_id = ?";
-        executeUpdate(sql, stmt -> stmt.setLong(1, userId));
-    }
 }

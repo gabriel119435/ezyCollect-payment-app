@@ -12,9 +12,10 @@ import java.util.concurrent.Executor;
 public class AsyncConfig {
     public static final String EXECUTOR_NAME = "paymentExecutor";
     private static final String THREAD_PREFIX = "payment-thread-";
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAX_POOL_SIZE = 10;
-    private static final int QUEUE_CAPACITY = 50;
+    // low capacity with purpose to generate error logs
+    private static final int CORE_POOL_SIZE = 1;
+    private static final int MAX_POOL_SIZE = 2;
+    private static final int QUEUE_CAPACITY = 3;
 
     @Bean(name = EXECUTOR_NAME)
     public Executor paymentExecutor() {

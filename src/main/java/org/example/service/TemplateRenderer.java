@@ -1,7 +1,7 @@
 package org.example.service;
 
 import lombok.Getter;
-import org.example.dto.exception.ValidationException;
+import org.example.dto.internal.exceptions.BadConfigurationException;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -11,9 +11,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
-import static org.example.service.TemplateEngine.TemplateKey.BY_KEY;
+import static org.example.service.TemplateRenderer.TemplateKey.BY_KEY;
 
-public class TemplateEngine {
+public class TemplateRenderer {
 
     @Getter
     public enum TemplateKey {
@@ -39,7 +39,7 @@ public class TemplateEngine {
                         TemplateKey::getKey,
                         identity(),
                         (existing, replacement) -> {
-                            throw new IllegalStateException("duplicate key: " + existing.getKey());
+                            throw new BadConfigurationException("enum with duplicate key: " + existing.getKey());
                         },
                         LinkedHashMap::new
                 ));
@@ -47,12 +47,12 @@ public class TemplateEngine {
 
     private static final Pattern PLACEHOLDER = Pattern.compile("\\[\\[([a-zA-Z_]+)]]");
 
-    public static void validateTemplate(String template) {
+    public static void validateTemplate(String template) throws IllegalArgumentException{
         Matcher matcher = PLACEHOLDER.matcher(template);
         while (matcher.find()) {
             String key = matcher.group(1);
             if (!BY_KEY.containsKey(key))
-                throw new ValidationException("invalid key in template: " + key + ", allowed keys: " + BY_KEY.keySet());
+                throw new IllegalArgumentException("invalid key in template: " + key + ", allowed keys: " + BY_KEY.keySet());
         }
     }
 
@@ -61,9 +61,9 @@ public class TemplateEngine {
         Matcher m = PLACEHOLDER.matcher(template);
         while (m.find()) {
             String key = m.group(1);
-            if (!BY_KEY.containsKey(key)) throw new IllegalArgumentException("invalid key " + key);
+            if (!BY_KEY.containsKey(key)) throw new BadConfigurationException("invalid key " + key);
             String replacement = values.get(key);
-            if (replacement == null) throw new IllegalArgumentException("missing value for key " + key);
+            if (replacement == null) throw new BadConfigurationException("missing value for key " + key);
             m.appendReplacement(sb, Matcher.quoteReplacement(replacement));
         }
         m.appendTail(sb);
