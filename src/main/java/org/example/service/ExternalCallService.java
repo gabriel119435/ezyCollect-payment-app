@@ -51,8 +51,8 @@ public class ExternalCallService {
             if (optionalPayment.isEmpty()) return new ExternalCallResult(false, "missing payment");
 
             double random = randomProvider.random();
-            if (random < 0.1) throw new RuntimeException("runtime random cause: " + random);
-            if (random < 0.5) {
+            if (random < 0.2) throw new RuntimeException("runtime random cause: " + random);
+            if (random < 0.6) {
                 log.info("payment_status {} randomly failed", ps.getId());
                 return new ExternalCallResult(false, "failed with error " + random);
             }

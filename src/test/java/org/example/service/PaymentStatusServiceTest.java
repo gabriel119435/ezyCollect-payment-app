@@ -26,7 +26,7 @@ class PaymentStatusServiceTest extends BaseMockTest {
 
     @BeforeEach
     void setUp() {
-        service = new PaymentStatusService(paymentStatusRepository, externalCallService, 3);
+        service = new PaymentStatusService(paymentStatusRepository, externalCallService, 5, 10);
     }
 
     private static PaymentStatus getPaymentStatus(PaymentStatus.Status status, int retries) {
@@ -72,7 +72,7 @@ class PaymentStatusServiceTest extends BaseMockTest {
 
     @Test
     void updateStatusWithRetryLimitReached() {
-        PaymentStatus ps = getPaymentStatus(RETRY, 2);
+        PaymentStatus ps = getPaymentStatus(RETRY, 4);
 
         when(paymentStatusRepository.tryToUpdate(
                 any(), anyInt(), anyString(), any(), anyLong(), anySet(), any())
@@ -84,5 +84,24 @@ class PaymentStatusServiceTest extends BaseMockTest {
                 PROCESSED, RETRY, true);
 
         assert (ps.getStatus() == PaymentStatus.Status.ERROR);
+    }
+
+    @Test
+    void updateStatusWithNotifyRetryLimitReached() {
+        PaymentStatus ps = getPaymentStatus(ERROR, 10);
+
+        when(paymentStatusRepository.tryToUpdate(
+                any(), anyInt(), anyString(), any(), anyLong(), anySet(), any())
+        ).thenReturn(1);
+
+        service.updateStatusWithExternalCall(ps, NOTIFYING,
+                Set.of(PROCESSED, RETRY_NOTIFY, ERROR), NOTIFIED, RETRY_NOTIFY, false
+        );
+
+        verify(externalCallService, never()).notifyClient(any());
+        verify(paymentStatusRepository, never()).tryToUpdate(any(), anyInt(), anyString(), any(), anyLong(), anySet(), any());
+        assert (ps.getRetries() == 10);
+        assert (ps.getStatus() == PaymentStatus.Status.ERROR);
+        assert (ps.getHistory().isEmpty());
     }
 }

@@ -101,9 +101,12 @@ after a payment is created, its status is `CREATED`. it ends in `ERROR` or `NOTI
 
 #### database
 
-![](images/usage_sql.png)
+![](images/db.png)
 
 #### logs
+
+* in pink, the errors from busy executor thrown by synchronous thread `scheduling`
+* in yellow, logs from async threads `payment-thread`
 
 ![](images/logs.png)
 

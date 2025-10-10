@@ -28,5 +28,6 @@ public class PaymentStatusScheduler {
         paymentStatusRepository.findByStatus(RETRY, BATCH_SIZE).forEach(paymentStatusHandler::processPayment);
         paymentStatusRepository.findByStatus(PROCESSED, BATCH_SIZE).forEach(paymentStatusHandler::sendNotification);
         paymentStatusRepository.findByStatus(RETRY_NOTIFY, BATCH_SIZE).forEach(paymentStatusHandler::sendNotification);
+        paymentStatusRepository.findByStatus(ERROR, BATCH_SIZE).forEach(paymentStatusHandler::sendNotification);
     }
 }

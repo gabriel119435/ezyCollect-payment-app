@@ -63,13 +63,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/payment_input'
-            example:
-              firstName: "name7"
-              lastName: "name7"
-              zipCode: "123-123"
-              cardInfo: "1234 1234 1234 1234 12/00 123"
-              paymentValue: 7000.0007
+              type: object
+              properties:
+                payments:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/payment_input'
+              example:
+                payments:
+                  - firstName: "name7"
+                    lastName: "name7"
+                    zipCode: "123-123"
+                    cardInfo: "1234 1234 1234 1234 12/00 123"
+                    paymentValue: 7000.0007
       responses:
         '201':
           description: payment created

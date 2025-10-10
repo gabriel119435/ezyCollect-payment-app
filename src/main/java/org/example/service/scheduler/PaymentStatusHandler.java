@@ -30,6 +30,6 @@ public class PaymentStatusHandler {
     @Async(AsyncConfig.EXECUTOR_NAME)
     @Transactional
     public void sendNotification(PaymentStatus ps) {
-        paymentStatusService.updateStatusWithExternalCall(ps, NOTIFYING, Set.of(PROCESSED, RETRY_NOTIFY), NOTIFIED, RETRY_NOTIFY, false);
+        paymentStatusService.updateStatusWithExternalCall(ps, NOTIFYING, Set.of(PROCESSED, RETRY_NOTIFY, ERROR), NOTIFIED, RETRY_NOTIFY, false);
     }
 }
