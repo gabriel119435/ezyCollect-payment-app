@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidURL {
-    String message() default "invalid url";
+    String message() default "invalid url" ;
 
     Class<?>[] groups() default {};
 

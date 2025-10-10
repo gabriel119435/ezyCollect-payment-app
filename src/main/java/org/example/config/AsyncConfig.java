@@ -10,8 +10,8 @@ import java.util.concurrent.Executor;
 @Configuration
 @Slf4j
 public class AsyncConfig {
-    public static final String EXECUTOR_NAME = "paymentExecutor";
-    private static final String THREAD_PREFIX = "payment-thread-";
+    public static final String EXECUTOR_NAME = "paymentExecutor" ;
+    private static final String THREAD_PREFIX = "payment-thread-" ;
     // low capacity with purpose to generate error logs
     private static final int CORE_POOL_SIZE = 1;
     private static final int MAX_POOL_SIZE = 2;

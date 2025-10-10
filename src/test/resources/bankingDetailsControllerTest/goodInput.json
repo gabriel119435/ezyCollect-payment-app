@@ -1,0 +1,7 @@
+{
+  "accountNumber": "acc123",
+  "routingNumber": "route123",
+  "bankName": "my bank",
+  "webhookUrl": "https://bank.webhook.com",
+  "bodyTemplate": "[[username]] payment processed"
+}

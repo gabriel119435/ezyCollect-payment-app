@@ -1,0 +1,8 @@
+{
+  "validation error": [
+    {
+      "field": "payments[0].cardInfo",
+      "message": "card expired"
+    }
+  ]
+}

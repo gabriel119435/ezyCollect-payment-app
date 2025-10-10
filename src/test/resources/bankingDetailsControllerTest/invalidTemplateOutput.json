@@ -1,0 +1,8 @@
+{
+  "validation error": [
+    {
+      "field": "bodyTemplate",
+      "message": "invalid key in template: unknown_key, allowed keys: [username, banking_details_bank_name, banking_details_routing_number, banking_details_account_number, payment_first_name, payment_last_name, payment_value, payment_status_status, payment_status_history, payment_status_updated_at]"
+    }
+  ]
+}

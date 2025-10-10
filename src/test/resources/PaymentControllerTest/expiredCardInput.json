@@ -1,0 +1,11 @@
+{
+  "payments": [
+    {
+      "firstName": "john",
+      "lastName": "doe",
+      "zipCode": "12345",
+      "cardInfo": "4242 4242 4242 4242 01/20 123",
+      "paymentValue": 100.50
+    }
+  ]
+}

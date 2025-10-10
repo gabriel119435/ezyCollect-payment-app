@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +44,8 @@ class UserServiceTest extends BaseMockTest {
         UserInput input = new UserInput("user1", "pass1");
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(new User()));
 
-        assertThrows(BusinessRuleViolationException.class, () -> userService.createUser(input));
+        BusinessRuleViolationException ex = assertThrows(BusinessRuleViolationException.class, () -> userService.createUser(input));
+        assertEquals("username user1 already exists", ex.getMessage());
 
         verify(userRepository, never()).save(any());
     }
@@ -68,7 +70,8 @@ class UserServiceTest extends BaseMockTest {
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user));
         when(userCustomRepository.findPendingPaymentsAmount(1L)).thenReturn(100);
 
-        assertThrows(BusinessRuleViolationException.class, () -> userService.deleteUser("user1"));
+        BusinessRuleViolationException ex = assertThrows(BusinessRuleViolationException.class, () -> userService.deleteUser("user1"));
+        assertEquals("user user1 still has pending payments", ex.getMessage());
 
         verify(userCustomRepository, never()).deleteAllDataRelatedToUser(anyLong());
         verify(userRepository, never()).deleteByUsername(any());

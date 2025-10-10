@@ -47,7 +47,7 @@ public class TemplateRenderer {
 
     private static final Pattern PLACEHOLDER = Pattern.compile("\\[\\[([a-zA-Z_]+)]]");
 
-    public static void validateTemplate(String template) throws IllegalArgumentException{
+    public static void validateTemplate(String template) throws IllegalArgumentException {
         Matcher matcher = PLACEHOLDER.matcher(template);
         while (matcher.find()) {
             String key = matcher.group(1);

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidBodyTemplate {
 
-    String message() default "invalid template";
+    String message() default "invalid template" ;
 
     Class<?>[] groups() default {};
 

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.internal.ExternalCallResult;
 import org.example.entity.BankingDetails;
 import org.example.entity.Payment;
@@ -16,23 +16,59 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.example.service.TemplateRenderer.TemplateKey.*;
 
+@Slf4j
 @Service
-public class WebhookService {
+public class ExternalCallService {
 
     private final PaymentRepository paymentRepository;
     private final BankingDetailsRepository bankingDetailsRepository;
+    private final CryptoService cryptoService;
     private final HttpClient httpClient;
+    private final RandomProvider randomProvider;
 
-    public WebhookService(PaymentRepository paymentRepository, BankingDetailsRepository bankingDetailsRepository, HttpClient httpClient) {
+    public ExternalCallService(
+            PaymentRepository paymentRepository,
+            BankingDetailsRepository bankingDetailsRepository,
+            CryptoService cryptoService,
+            HttpClient httpClient,
+            RandomProvider randomProvider
+    ) {
         this.paymentRepository = paymentRepository;
         this.bankingDetailsRepository = bankingDetailsRepository;
+        this.cryptoService = cryptoService;
         this.httpClient = httpClient;
+        this.randomProvider = randomProvider;
     }
 
-    @Transactional
+    public ExternalCallResult makePayment(PaymentStatus ps) {
+        try {
+            Optional<Payment> optionalPayment = paymentRepository.findById(ps.getPaymentId());
+
+            if (optionalPayment.isEmpty()) return new ExternalCallResult(false, "missing payment");
+
+            double random = randomProvider.random();
+            if (random < 0.1) throw new RuntimeException("runtime random cause: " + random);
+            if (random < 0.5) {
+                log.info("payment_status {} randomly failed", ps.getId());
+                return new ExternalCallResult(false, "failed with error " + random);
+            }
+
+            Payment payment = optionalPayment.get();
+            String rawCardInfo = cryptoService.decrypt(payment.getCardInfo());
+
+            log.info("payment_status {} was successful with card info {}", ps.getId(), rawCardInfo);
+            return new ExternalCallResult(true, "paid");
+        } catch (Exception e) {
+            String message = "error during " + ps;
+            log.error(message, e);
+            return new ExternalCallResult(false, e.getMessage());
+        }
+    }
+
     public ExternalCallResult notifyClient(PaymentStatus paymentStatus) {
         Payment payment = paymentRepository.findById(paymentStatus.getPaymentId()).orElseThrow(
                 () -> new IllegalArgumentException("paymentStatus " + paymentStatus + " does not have a user")

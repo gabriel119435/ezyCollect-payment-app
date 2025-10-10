@@ -19,7 +19,7 @@ import java.util.Base64;
 @Component
 public class CryptoService {
     private final String key;
-    private static final String ALGO = "AES";
+    private static final String ALGO = "AES" ;
 
     public CryptoService(@Value("${crypto.key}") String key) {
         if (key.length() != 16) throw new BadConfigurationException("crypto.key should have length 16");

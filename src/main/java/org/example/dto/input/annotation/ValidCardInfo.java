@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCardInfo {
-    String message() default "invalid card info";
+    String message() default "invalid card info" ;
 
     Class<?>[] groups() default {};
 
